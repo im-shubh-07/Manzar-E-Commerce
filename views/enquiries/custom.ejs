@@ -1,0 +1,153 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 85vh;">
+        <div class="container-xl px-4 py-3">
+
+            <!-- Header -->
+            <div class="text-center mx-auto mb-5" style="max-width: 680px;">
+                <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-2">FABRICATION
+                    STUDIO</span>
+                <h1 class="font-serif display-5 fw-bold mb-3" style="color: #174840;">
+                    Design Your Custom <em class="fst-italic text-warning fw-normal">Almirah.</em>
+                </h1>
+                <p class="text-muted lead-sm">
+                    Every room is unique. Tell us your room dimensions, preferred steel gauge, internal locker layout,
+                    and color. Our master fabricator in Purnia will craft it to your exact specifications.
+                </p>
+            </div>
+
+            <!-- Main Custom Form Card -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+                    <div class="product-card p-4 p-md-5 border"
+                        style="background: white; border-color: var(--manzar-border) !important;">
+
+                        <form action="/enquiries/custom" method="POST">
+
+                            <!-- Step 1: Door Configuration -->
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase"
+                                    style="color: #174840; letter-spacing: 0.1em;">
+                                    1. Door & Size Configuration
+                                </label>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-check p-3 rounded-3 border h-100"
+                                            style="background: #FAF7F2; border-color: var(--manzar-border) !important;">
+                                            <input class="form-check-input" type="radio" name="doorType" id="door2"
+                                                value="2-Door Standard" checked>
+                                            <label class="form-check-label ps-2" for="door2">
+                                                <strong class="d-block" style="color: #174840;">2-Door Classic</strong>
+                                                <small class="text-muted">78H × 36W × 19D inches</small>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-check p-3 rounded-3 border h-100"
+                                            style="background: #FAF7F2; border-color: var(--manzar-border) !important;">
+                                            <input class="form-check-input" type="radio" name="doorType" id="door3"
+                                                value="3-Door Master">
+                                            <label class="form-check-label ps-2" for="door3">
+                                                <strong class="d-block" style="color: #174840;">3-Door Master</strong>
+                                                <small class="text-muted">78H × 54W × 21D inches</small>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-check p-3 rounded-3 border h-100"
+                                            style="background: #FAF7F2; border-color: var(--manzar-border) !important;">
+                                            <input class="form-check-input" type="radio" name="doorType" id="doorCustom"
+                                                value="Full Wall Custom">
+                                            <label class="form-check-label ps-2" for="doorCustom">
+                                                <strong class="d-block" style="color: #174840;">Full Wall
+                                                    Custom</strong>
+                                                <small class="text-muted">Custom Alcove Fit</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Custom Dimensions Input -->
+                            <div class="mb-4">
+                                <label class="form-label small fw-semibold text-muted">Exact Room Dimensions (If
+                                    Known)</label>
+                                <input type="text" name="size" class="form-control rounded-pill px-4 py-2"
+                                    placeholder="e.g. Height: 84 inches, Width: 42 inches, Depth: 22 inches" required>
+                            </div>
+
+                            <!-- Step 2: Color Choice -->
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase"
+                                    style="color: #174840; letter-spacing: 0.1em;">
+                                    2. Powder-Coated Color Finish
+                                </label>
+                                <select name="color" class="form-select rounded-pill px-4 py-2">
+                                    <option value="Forest Pine Green (Brand Signature)">Forest Pine Green (Brand
+                                        Signature)</option>
+                                    <option value="Classic Maroon & Brass Trim">Classic Maroon & Brass Trim</option>
+                                    <option value="Royal Navy Blue & Gold">Royal Navy Blue & Gold</option>
+                                    <option value="Warm Terracotta">Warm Terracotta</option>
+                                    <option value="Matte Charcoal Industrial">Matte Charcoal Industrial</option>
+                                    <option value="Custom Dual Tone Finish">Custom Dual Tone (Two Colors)</option>
+                                </select>
+                            </div>
+
+                            <!-- Step 3: Locker & Interior Layout -->
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase"
+                                    style="color: #174840; letter-spacing: 0.1em;">
+                                    3. Interior & Locker Requirements
+                                </label>
+                                <textarea name="designRequirements" rows="3" class="form-control rounded-4 p-3"
+                                    placeholder="Describe locker requirements (e.g. Bottom secret tijori, Belgian full mirror on door, saree hanging rail, jewelry velvet drawer, dual keys...)"
+                                    required></textarea>
+                            </div>
+
+                            <!-- Step 4: Contact Details -->
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-uppercase"
+                                    style="color: #174840; letter-spacing: 0.1em;">
+                                    4. Your Contact Information
+                                </label>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <input type="text" name="customerName"
+                                            class="form-control rounded-pill px-4 py-2" placeholder="Your Full Name"
+                                            value="<%= typeof currentUser !== 'undefined' && currentUser ? currentUser.name : '' %>"
+                                            required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="tel" name="phone" class="form-control rounded-pill px-4 py-2"
+                                            placeholder="Phone Number (WhatsApp preferred)" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit"
+                                class="btn btn-warning w-100 rounded-pill py-3 fw-semibold text-white shadow-sm fs-6 mb-3">
+                                Request 3D Sketch & Fabrication Quote &rarr;
+                            </button>
+
+                            <!-- WhatsApp Direct Alternative -->
+                            <div class="text-center pt-2">
+                                <span class="text-muted small">Have an image or sketch on your phone? </span>
+                                <a href="https://wa.me/917782091388?text=Hello%20M%20N%20%26%20SONS,%20I%20have%20a%20custom%20almirah%20photo/sketch%20to%20fabricate."
+                                    target="_blank" class="text-success fw-semibold text-decoration-none small">
+                                    Send directly on WhatsApp &rarr;
+                                </a>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>

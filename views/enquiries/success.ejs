@@ -1,0 +1,96 @@
+<% layout('../layouts/boilerplate') %>
+
+  <div class="container-xl px-4 py-5 my-5 text-center">
+    <div class="mx-auto" style="max-width: 540px;">
+
+      <!-- Success Icon -->
+      <div class="mb-4">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+      </div>
+
+      <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-1">M N & SONS</span>
+      <h1 class="font-serif display-5 manzar-green mb-3">Enquiry Submitted!</h1>
+      <p class="text-muted mb-5">
+        Thank you for reaching out. We will call you shortly to discuss specifications, delivery, and final fabrication
+        quote.
+      </p>
+
+      <% if (enquiry) { %>
+        <div class="card border-0 shadow-sm rounded-4 text-start mb-4"
+          style="background: #ffffff; border: 1px solid var(--manzar-border) !important;">
+          <div class="card-body p-4">
+            <h5 class="fw-semibold mb-3 font-serif manzar-green">Enquiry Summary</h5>
+
+            <!-- Customer Details -->
+            <% if (enquiry.customerName) { %>
+              <p class="mb-1"><strong>Name:</strong>
+                <%= enquiry.customerName %>
+              </p>
+              <% } %>
+                <p class="mb-1"><strong>Phone:</strong>
+                  <%= enquiry.phone %>
+                </p>
+
+                <!-- Customisation Specifics (Agar Custom Enquiry hai) -->
+                <% if (enquiry.color) { %>
+                  <div class="my-3 p-3 rounded-3" style="background: #faf7f2; border: 1px solid var(--manzar-border);">
+                    <div class="small text-uppercase fw-bold text-warning mb-2 tracking-wide">Custom Specifications
+                    </div>
+                    <p class="mb-1 small"><strong>Selected Color:</strong>
+                      <%= enquiry.color %>
+                    </p>
+                    <p class="mb-1 small"><strong>Required Dimensions:</strong>
+                      <%= enquiry.size %>
+                    </p>
+                    <% if (enquiry.designRequirements) { %>
+                      <p class="mb-0 small"><strong>Locker / Design Notes:</strong>
+                        <%= enquiry.designRequirements %>
+                      </p>
+                      <% } %>
+                  </div>
+                  <% } %>
+
+                    <!-- Note / General Message -->
+                    <% if (enquiry.message) { %>
+                      <p class="mb-3"><strong>Note:</strong>
+                        <%= enquiry.message %>
+                      </p>
+                      <% } %>
+
+                        <!-- Products from Cart (Agar Cart se enquiry aayi hai) -->
+                        <% if (enquiry.products && enquiry.products.length> 0) { %>
+                          <hr />
+                          <% enquiry.products.forEach(p=> { %>
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                              <span>
+                                <%= p.name || p.title %> × <%= p.quantity || 1 %>
+                              </span>
+                              <span>₹<%= ((p.price || 0) * (p.quantity || 1)).toLocaleString('en-IN') %></span>
+                            </div>
+                            <% }) %>
+
+                              <% if (enquiry.totalAmount) { %>
+                                <div class="d-flex justify-content-between fw-bold mt-3 border-top pt-3">
+                                  <span class="manzar-green">Estimated Total</span>
+                                  <span class="text-warning">₹<%= enquiry.totalAmount.toLocaleString('en-IN') %></span>
+                                </div>
+                                <% } %>
+                                  <% } %>
+
+          </div>
+        </div>
+        <% } %>
+
+          <!-- Action Buttons -->
+          <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="/" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold">
+              Back to Shop
+            </a>
+            <a href="https://wa.me/919470023148?text=Hello%20M%20N%20%26%20SONS,%20I%20have%20submitted%20an%20enquiry%20from%20your%20website."
+              target="_blank" class="btn btn-success rounded-pill px-4 py-2 fw-semibold shadow-sm">
+              <i class="bi bi-whatsapp me-2"></i>WhatsApp Us
+            </a>
+          </div>
+
+    </div>
+  </div>

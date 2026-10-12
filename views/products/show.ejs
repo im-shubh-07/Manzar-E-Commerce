@@ -1,0 +1,313 @@
+<% layout('layouts/boilerplate') %>
+
+  <% const prodImg=(product.images && product.images.length> 0) ? product.images[0] : (product.image ||
+    'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1000&q=80'); %>
+
+    <section class="py-5" style="min-height: 90vh;">
+      <div class="container-xl px-4 py-3">
+
+        <!-- ─── 1. BREADCRUMB ─── -->
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">Home</a></li>
+            <li class="breadcrumb-item"><a href="/#shop" class="text-decoration-none text-muted">Almirahs</a></li>
+            <li class="breadcrumb-item active fw-semibold" aria-current="page" style="color: #174840;">
+              <%= product.name %>
+            </li>
+          </ol>
+        </nav>
+
+        <!-- ─── 2. MAIN PRODUCT ROW ─── -->
+        <div class="row g-5 align-items-start">
+
+          <!-- LEFT: FRAMED PRODUCT PHOTO -->
+          <div class="col-lg-6">
+            <div class="hero-img-wrap shadow-sm position-relative"
+              style="background-color: #EFE6DC; border-radius: 28px; padding: 12px; border: 1px solid var(--manzar-border);">
+              <img src="<%= prodImg %>" alt="<%= product.name %>" class="w-100 rounded-4 shadow-sm"
+                style="max-height: 540px; object-fit: cover; display: block;">
+
+              <!-- Quality Badge -->
+              <div class="position-absolute bottom-0 start-0 m-4 p-3 rounded-3 shadow-sm"
+                style="background: rgba(250, 247, 242, 0.95); backdrop-filter: blur(8px); border: 1px solid #E8DCCF;">
+                <div class="text-uppercase small fw-bold text-muted mb-0"
+                  style="font-size: 0.65rem; letter-spacing: 0.15em;">CRAFTED IN PURNIA</div>
+                <div class="font-serif fw-bold" style="color: #174840;">
+                  <%= product.gauge || '20-Gauge CRCA Steel' %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: SPECS & ACTIONS -->
+          <div class="col-lg-6 ps-lg-4">
+
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="badge rounded-pill text-uppercase px-3 py-1 fw-semibold"
+                style="background: #EAE1D5; color: #174840; font-size: 0.72rem; letter-spacing: 0.12em;">
+                <%= product.category %> Collection
+              </span>
+              <div class="text-warning small">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <span class="text-muted ms-1 small">
+                  (<%= (typeof reviews !=='undefined' && reviews.length> 0) ? (reviews.reduce((acc, r) => acc +
+                    r.rating, 0) / reviews.length).toFixed(1) : '5.0' %> &middot; Handcrafted)
+                </span>
+              </div>
+            </div>
+
+            <h1 class="font-serif display-5 fw-bold mb-3" style="color: #174840;">
+              <%= product.name %>
+            </h1>
+
+            <div class="d-flex align-items-baseline gap-3 mb-4">
+              <span class="fs-2 fw-bold text-warning">₹<%= Number(product.price || 0).toLocaleString('en-IN') %></span>
+              <span class="text-muted small">Inclusive of all taxes &middot; Free delivery in Purnia</span>
+            </div>
+
+            <p class="text-muted mb-4 lead-sm" style="line-height: 1.7;">
+              <%= product.description
+                || 'Expertly engineered with heavy CRCA industrial steel. Features anti-rust powder coating, durable brass multi-lever lock, internal hanging rod, and security secret locker designed for generational longevity.'
+                %>
+            </p>
+
+            <!-- Technical Specs Box -->
+            <div class="p-3 rounded-4 mb-4" style="background: #FAF7F2; border: 1px solid var(--manzar-border);">
+              <div class="row g-3 small">
+                <div class="col-6">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">STEEL GAUGE</span>
+                  <strong style="color: #174840;">
+                    <%= product.gauge || '20-Gauge Heavy Steel' %>
+                  </strong>
+                </div>
+                <div class="col-6">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">DIMENSIONS (H×W×D)</span>
+                  <strong style="color: #174840;">
+                    <%= product.dimensions || '78H × 36W × 19D inches' %>
+                  </strong>
+                </div>
+                <div class="col-6">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">COLOR FINISH</span>
+                  <strong style="color: #174840;">
+                    <%= product.color || 'Powder Coating' %>
+                  </strong>
+                </div>
+                <div class="col-6">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">WARRANTY</span>
+                  <strong style="color: #174840;">10-Year Rust &amp; Lock Warranty</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex flex-column gap-3 mb-4">
+              <!-- Add to Cart Form -->
+              <form class="add-to-cart-form w-100">
+                <input type="hidden" name="productId" value="<%= product._id %>">
+                <input type="hidden" name="title" value="<%= product.name %>">
+                <input type="hidden" name="price" value="<%= product.price %>">
+                <input type="hidden" name="image" value="<%= prodImg %>">
+
+                <button type="submit"
+                  class="btn btn-warning w-100 rounded-pill py-3 fw-semibold text-white shadow-sm fs-6 add-to-cart-btn">
+                  + Add to Cart &middot; ₹<%= Number(product.price || 0).toLocaleString('en-IN') %>
+                </button>
+              </form>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="d-flex align-items-center justify-content-between pt-3 border-top text-muted small"
+              style="border-color: #E8DCCF !important;">
+              <span>✓ Direct Factory Price</span>
+              <span>✓ Free Local Delivery</span>
+              <span>✓ 30% Token Advance Accepted</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ════════════ 3. REVIEWS & VERIFIED BUYER FEEDBACK (DISPLAY ONLY) ════════════ -->
+        <div class="mt-5 pt-5 border-top" id="reviews" style="border-color: #E8DCCF !important;">
+
+          <!-- Section Header -->
+          <div class="d-flex flex-wrap align-items-end justify-content-between mb-4 pb-3 border-bottom"
+            style="border-color: #E8DCCF !important;">
+            <div>
+              <span class="text-uppercase small fw-bold text-warning tracking-widest d-block mb-1">CUSTOMER
+                EXPERIENCES</span>
+              <h3 class="font-serif fw-bold mb-0" style="color: #174840;">
+                Verified Buyer Reviews
+                <span class="text-warning fs-4 ms-2">★ <%= (typeof reviews !=='undefined' && reviews.length> 0) ?
+                    (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : '5.0' %></span>
+                <small class="text-muted fs-6 fw-normal ms-1">(<%= typeof reviews !=='undefined' ? reviews.length : 0 %>
+                    verified reviews)</small>
+              </h3>
+            </div>
+
+            <div class="text-muted small">
+              <i class="bi bi-shield-check text-success me-1"></i> Reviews are written exclusively by customers upon
+              order delivery.
+            </div>
+          </div>
+
+          <!-- Reviews Display List -->
+          <% if (!reviews || reviews.length===0) { %>
+            <div class="p-5 rounded-4 border text-center text-muted"
+              style="background: white; border-color: var(--manzar-border) !important;">
+              <i class="bi bi-chat-square-quote display-4 text-muted opacity-50 mb-3 d-block"></i>
+              <p class="mb-1 fw-semibold fs-5 text-dark font-serif">No reviews yet for this model.</p>
+              <small class="text-muted">Verified customers can share their feedback from their Order History after
+                delivery!</small>
+            </div>
+            <% } else { %>
+              <div class="row g-4">
+                <% reviews.forEach(review=> { %>
+                  <div class="col-md-6">
+                    <div class="p-4 rounded-4 border h-100 shadow-sm"
+                      style="background: white; border-color: var(--manzar-border) !important;">
+
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <strong class="text-dark fs-6" style="color: #174840;">
+                            <%= review.authorName || review.author || 'Verified Buyer' %>
+                          </strong>
+                          <span
+                            class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 ms-2"
+                            style="font-size: 0.7rem;">
+                            <i class="bi bi-patch-check-fill me-1"></i>Verified Buyer
+                          </span>
+                        </div>
+                        <small class="text-muted">
+                          <%= new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric' , month: 'short' ,
+                            year: 'numeric' }) %>
+                        </small>
+                      </div>
+
+                      <!-- Stars -->
+                      <div class="text-warning small mb-3">
+                        <% for (let i=1; i <=5; i++) { %>
+                          <i class="bi <%= i <= review.rating ? 'bi-star-fill' : 'bi-star' %>"></i>
+                          <% } %>
+                            <span class="text-dark fw-bold ms-1">
+                              <%= review.rating %>.0
+                            </span>
+                      </div>
+
+                      <!-- Comment Text -->
+                      <p class="text-secondary mb-0" style="line-height: 1.7; font-size: 0.95rem;">
+                        "<%= review.comment %>"
+                      </p>
+
+                    </div>
+                  </div>
+                  <% }); %>
+              </div>
+              <% } %>
+
+        </div>
+
+        <!-- ─── 4. RELATED PRODUCTS ─── -->
+        <% if (typeof related !=='undefined' && related && related.length> 0) { %>
+          <div class="mt-5 pt-5 border-top" style="border-color: #E8DCCF !important;">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+              <div>
+                <span class="text-uppercase small fw-bold text-warning tracking-widest d-block mb-1">YOU MAY ALSO
+                  LIKE</span>
+                <h3 class="font-serif fw-bold mb-0" style="color: #174840;">Complementary Pieces</h3>
+              </div>
+              <a href="/#shop" class="text-muted small text-decoration-none">View all &rarr;</a>
+            </div>
+
+            <div class="row g-4">
+              <% related.forEach(rel=> { %>
+                <% const relImg=(rel.images && rel.images.length> 0) ? rel.images[0] : (rel.image ||
+                  'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=600&q=80'); %>
+                  <div class="col-md-4">
+                    <div class="product-card h-100 p-3 border"
+                      style="background: white; border-color: var(--manzar-border) !important;">
+                      <div class="product-img-wrap rounded-3 mb-3" style="height: 240px;">
+                        <img src="<%= relImg %>" alt="<%= rel.name %>" class="w-100 h-100 object-fit-cover rounded-3">
+                        <a href="/products/<%= rel._id %>" class="product-overlay-link">
+                          <span class="btn btn-sm btn-light rounded-pill px-3 overlay-btn shadow-sm">View Details</span>
+                        </a>
+                      </div>
+                      <h6 class="font-serif fw-semibold mb-1" style="color: #174840;">
+                        <%= rel.name %>
+                      </h6>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-warning fw-bold">₹<%= Number(rel.price || 0).toLocaleString('en-IN') %></span>
+                        <a href="/products/<%= rel._id %>" class="small text-muted text-decoration-none">View &rarr;</a>
+                      </div>
+                    </div>
+                  </div>
+                  <% }); %>
+            </div>
+          </div>
+          <% } %>
+
+      </div>
+    </section>
+
+    <!-- ─── JAVASCRIPT: INSTANT ADD TO CART (DETAIL PAGE) ─── -->
+    <script>
+      document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const btn = form.querySelector('button');
+          const originalText = btn.innerHTML;
+
+          btn.disabled = true;
+          btn.innerHTML = 'Adding...';
+
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries());
+          data.ajax = true;
+
+          try {
+            const response = await fetch('/cart/add', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (!result.success && result.requireLogin) {
+              window.location.href = '/login';
+              return;
+            }
+
+            if (result.success) {
+              const badge = document.getElementById('cart-badge-count');
+              if (badge) {
+                badge.innerText = result.cartCount;
+                badge.style.transform = 'scale(1.3)';
+                setTimeout(() => { badge.style.transform = 'scale(1)'; }, 200);
+              }
+
+              btn.classList.remove('btn-warning');
+              btn.classList.add('btn-success', 'text-white');
+              btn.innerHTML = '✓ Added to Cart!';
+
+              setTimeout(() => {
+                btn.classList.remove('btn-success', 'text-white');
+                btn.classList.add('btn-warning');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              }, 2000);
+            }
+          } catch (err) {
+            console.error('Error adding to cart:', err);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        });
+      });
+    </script>

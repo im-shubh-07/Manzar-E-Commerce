@@ -1,0 +1,316 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 80vh; background-color: var(--manzar-cream);">
+        <div class="container-xl px-4 py-3">
+
+            <!-- Page Header -->
+            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom"
+                style="border-color: #E8DCCF !important;">
+                <div>
+                    <span class="text-uppercase small fw-bold text-muted" style="letter-spacing: 0.15em;">M N &amp;
+                        SONS</span>
+                    <h1 class="font-serif fw-bold mt-1" style="color: #174840;">My Orders &amp; Track</h1>
+                </div>
+                <a href="/#shop" class="btn btn-outline-dark rounded-pill px-4 btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+                </a>
+            </div>
+
+            <% if (!orders || orders.length===0) { %>
+                <!-- Empty State -->
+                <div class="text-center py-5 rounded-4 shadow-sm"
+                    style="background: #FFFFFF; border: 1px solid var(--manzar-border);">
+                    <i class="bi bi-box-seam display-1 text-muted opacity-50 mb-3 d-block"></i>
+                    <h3 class="font-serif fw-bold" style="color: #174840;">No Orders Placed Yet</h3>
+                    <p class="text-muted mb-4">You haven't ordered any handcrafted almirahs yet.</p>
+                    <a href="/#shop" class="btn btn-manzar-primary px-4 py-2">Explore Catalog</a>
+                </div>
+                <% } else { %>
+                    <!-- Orders List -->
+                    <div class="row g-4">
+                        <% orders.forEach(order=> { %>
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm rounded-4 overflow-hidden"
+                                    style="background: #FFFFFF; border: 1px solid #E8DCCF !important;">
+
+                                    <!-- Order Header -->
+                                    <div class="card-header border-0 py-3 px-4 d-flex flex-wrap justify-content-between align-items-center gap-3"
+                                        style="background: #FAF7F2; border-bottom: 1px solid #E8DCCF !important;">
+                                        <div>
+                                            <span class="text-muted small">ORDER ID:</span>
+                                            <span class="fw-bold ms-1" style="color: #174840;">#<%=
+                                                    order._id.toString().slice(-8).toUpperCase() %></span>
+                                            <span class="text-muted small ms-3">Placed on: <%= new
+                                                    Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric' ,
+                                                    month: 'short' , year: 'numeric' }) %></span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="/orders/<%= order._id %>/invoice" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill px-3" style="font-size: 0.75rem;">
+                                                <i class="bi bi-printer me-1"></i> Receipt
+                                            </a>
+                                            <span class="badge px-3 py-2 rounded-pill text-uppercase fw-semibold" style="font-size: 0.75rem; 
+                      <%= order.orderStatus === 'Delivered' ? 'background: #D4EDDA; color: #155724;' : 
+                         order.orderStatus === 'Dispatched' ? 'background: #CCE5FF; color: #004085;' : 
+                         order.orderStatus === 'Powder Coating' ? 'background: #FFF3CD; color: #856404;' : 
+                         'background: #EAE1D5; color: #174840;' %>">
+                                                <%= order.orderStatus || 'Confirmed' %>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body p-4">
+                                        <!-- 5-Step Fabrication & Tracking Bar -->
+                                        <div class="mb-4">
+                                            <h6 class="text-uppercase small fw-bold text-muted mb-3"
+                                                style="letter-spacing: 0.1em;">Fabrication &amp; Delivery Progress</h6>
+                                            <% const steps=['Confirmed', 'Under Fabrication' , 'Powder Coating'
+                                                , 'Dispatched' , 'Delivered' ]; const
+                                                currentIdx=steps.indexOf(order.orderStatus || 'Confirmed' ); %>
+                                                <div class="d-flex justify-content-between position-relative px-2">
+                                                    <div class="position-absolute top-50 start-0 translate-middle-y w-100"
+                                                        style="height: 4px; background: #E8DCCF; z-index: 1;">
+                                                        <div
+                                                            style="height: 100%; background: #174840; width: <%= Math.max(0, currentIdx) / (steps.length - 1) * 100 %>%; transition: width 0.4s ease;">
+                                                        </div>
+                                                    </div>
+                                                    <% steps.forEach((step, idx)=> { %>
+                                                        <div class="text-center position-relative" style="z-index: 2;">
+                                                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm"
+                                                                style="width: 32px; height: 32px; font-size: 0.8rem; font-weight: bold;
+                             <%= idx <= currentIdx ? 'background: #174840; color: #FAF7F2;' : 'background: #FFFFFF; border: 2px solid #E8DCCF; color: #999;' %>">
+                                                                <% if (idx <=currentIdx) { %>✓<% } else { %>
+                                                                        <%= idx + 1 %>
+                                                                            <% } %>
+                                                            </div>
+                                                            <div class="small mt-2 fw-semibold <%= idx <= currentIdx ? 'text-dark' : 'text-muted' %>"
+                                                                style="font-size: 0.75rem;">
+                                                                <%= step %>
+                                                            </div>
+                                                        </div>
+                                                        <% }); %>
+                                                </div>
+                                        </div>
+
+                                        <hr style="border-color: #E8DCCF;">
+
+                                        <!-- Order Details & Products -->
+                                        <div class="row g-4 align-items-center">
+                                            <div class="col-md-7">
+                                                <h6 class="fw-bold mb-3" style="color: #174840;">Purchased Items:</h6>
+
+                                                <% if (order.items && order.items.length> 0) { %>
+                                                    <div class="d-flex flex-column gap-2">
+                                                        <% order.items.forEach(item=> { %>
+                                                            <% const prodId=(item.product && item.product._id) ?
+                                                                item.product._id : item.product; %>
+                                                                <% const prodName=(item.product && item.product.name) ?
+                                                                    item.product.name : (order.title || 'Steel Almirah'
+                                                                    ); %>
+
+                                                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3"
+                                                                        style="background: #FAF7F2; border: 1px solid #E8DCCF;">
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <span
+                                                                                class="badge rounded-pill bg-dark text-white">x
+                                                                                <%= item.quantity || 1 %></span>
+                                                                            <div>
+                                                                                <strong style="color: #174840;"
+                                                                                    class="d-block">
+                                                                                    <%= prodName %>
+                                                                                </strong>
+                                                                                <span class="text-muted small">₹<%=
+                                                                                        Number(item.price ||
+                                                                                        0).toLocaleString('en-IN') %>
+                                                                                        </span>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- REVIEW BAR: ONLY SHOWN IF STATUS IS DELIVERED -->
+                                                                        <% if (order.orderStatus==='Delivered' &&
+                                                                            prodId) { %>
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-success rounded-pill px-3 fw-semibold shadow-sm"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#reviewModal"
+                                                                                data-product-id="<%= prodId %>"
+                                                                                data-product-name="<%= prodName %>">
+                                                                                <i
+                                                                                    class="bi bi-star-fill text-warning me-1"></i>
+                                                                                Review Product
+                                                                            </button>
+                                                                            <% } %>
+                                                                    </div>
+                                                                    <% }); %>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <div class="p-3 rounded-3"
+                                                            style="background: #FAF7F2; border: 1px solid #E8DCCF;">
+                                                            <strong style="color: #174840;">
+                                                                <%= order.title || 'Handcrafted Steel Almirah' %>
+                                                            </strong>
+                                                            <span class="text-muted small d-block">
+                                                                <%= order.size || 'Standard Size' %>
+                                                            </span>
+                                                        </div>
+                                                        <% } %>
+
+                                                            <div class="mt-3 text-muted small">
+                                                                <i class="bi bi-geo-alt me-1"></i> Delivery Address:
+                                                                <strong>
+                                                                    <%= order.deliveryAddress
+                                                                        || 'Purnia Workshop Pickup' %>
+                                                                </strong>
+                                                            </div>
+                                            </div>
+
+                                            <!-- Financials -->
+                                            <div class="col-md-5 p-3 rounded-3"
+                                                style="background: #FAF7F2; border: 1px solid #E8DCCF;">
+                                                <div class="d-flex justify-content-between small mb-1">
+                                                    <span class="text-muted">Total Amount:</span>
+                                                    <strong style="color: #174840;">₹<%= Number(order.totalAmount ||
+                                                            0).toLocaleString('en-IN') %></strong>
+                                                </div>
+                                                <div class="d-flex justify-content-between small mb-1">
+                                                    <span class="text-muted">Advance Paid:</span>
+                                                    <span class="text-success fw-bold">₹<%= Number(order.advancePaid ||
+                                                            0).toLocaleString('en-IN') %></span>
+                                                </div>
+                                                <div class="d-flex justify-content-between small mb-2 pb-2 border-bottom"
+                                                    style="border-color: #E8DCCF !important;">
+                                                    <span class="text-muted">Balance Due on Delivery:</span>
+                                                    <span class="text-danger fw-bold">₹<%= Number(order.remainingAmount
+                                                            || (order.totalAmount - (order.advancePaid ||
+                                                            0))).toLocaleString('en-IN') %></span>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span
+                                                        class="badge <%= order.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark' %>">
+                                                        <%= order.paymentStatus==='Paid' ? 'Full Paid'
+                                                            : 'Advance Confirmed' %>
+                                                    </span>
+                                                    <a href="https://wa.me/917782091388?text=Hello%20M%20N%20%26%20SONS,%20query%20for%20order%20<%= order._id %>"
+                                                        target="_blank"
+                                                        class="btn btn-sm btn-outline-success rounded-pill px-3">
+                                                        <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- SPECIAL DELIVERED NOTIFICATION & REVIEW BANNER (ONLY IF DELIVERED) -->
+                                        <% if (order.orderStatus==='Delivered' ) { %>
+                                            <div class="mt-4 p-3 rounded-3 d-flex flex-wrap align-items-center justify-content-between gap-2"
+                                                style="background: #E8F5E9; border: 1px solid #C8E6C9;">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-patch-check-fill text-success fs-4"></i>
+                                                    <div>
+                                                        <strong class="text-success d-block small">Order Delivered
+                                                            Successfully!</strong>
+                                                        <span class="text-muted small">How was the steel quality and
+                                                            lock finish? Share your feedback to help others.</span>
+                                                    </div>
+                                                </div>
+                                                <% const firstItem=(order.items && order.items.length> 0) ?
+                                                    order.items[0] : null; %>
+                                                    <% const firstProdId=firstItem ? (firstItem.product &&
+                                                        firstItem.product._id ? firstItem.product._id :
+                                                        firstItem.product) : null; %>
+                                                        <% const firstProdName=firstItem ? (firstItem.product &&
+                                                            firstItem.product.name ? firstItem.product.name :
+                                                            order.title) : (order.title || 'Steel Almirah' ); %>
+                                                            <% if (firstProdId) { %>
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-success rounded-pill px-4 fw-semibold"
+                                                                    data-bs-toggle="modal" data-bs-target="#reviewModal"
+                                                                    data-product-id="<%= firstProdId %>"
+                                                                    data-product-name="<%= firstProdName %>">
+                                                                    <i class="bi bi-pencil-square me-1"></i> Write
+                                                                    Review
+                                                                </button>
+                                                                <% } %>
+                                            </div>
+                                            <% } %>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } %>
+
+        </div>
+    </section>
+
+    <!-- ─── MODAL: RATE & REVIEW (DELIVERED ORDERS ONLY) ─── -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+
+                <div class="modal-header border-bottom py-3 px-4"
+                    style="background: #FAF7F2; border-color: #E8DCCF !important;">
+                    <div>
+                        <span class="badge bg-success-subtle text-success small mb-1">✓ Verified Delivery</span>
+                        <h5 class="modal-title font-serif fw-bold" id="reviewModalLabel" style="color: #174840;">Rate
+                            &amp; Review Almirah</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="/orders/review" method="POST">
+                    <div class="modal-body p-4">
+                        <input type="hidden" name="productId" id="modalProductId" value="">
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">PRODUCT</label>
+                            <div id="modalProductName" class="fw-bold fs-5" style="color: #174840;">Steel Almirah</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">RATING</label>
+                            <select name="rating" class="form-select rounded-3 py-2" required>
+                                <option value="5" selected>⭐⭐⭐⭐⭐ (5 - Outstanding Quality)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 - Very Good Build)</option>
+                                <option value="3">⭐⭐⭐ (3 - Average)</option>
+                                <option value="2">⭐⭐ (2 - Below Expectation)</option>
+                                <option value="1">⭐ (1 - Disappointed)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">YOUR REVIEW &amp; EXPERIENCE</label>
+                            <textarea name="comment" rows="4" class="form-control rounded-3"
+                                placeholder="Steel thickness, weld finish, lock system aur paint kaisa laga? Likhein..."
+                                required></textarea>
+                            <div class="form-text small">Published on product catalog under <strong>Verified Buyer
+                                    Reviews</strong>.</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top py-3 px-4"
+                        style="background: #FAF7F2; border-color: #E8DCCF !important;">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-manzar-primary px-4">
+                            <i class="bi bi-send-fill me-1"></i> Post Verified Review
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const reviewModal = document.getElementById('reviewModal');
+        if (reviewModal) {
+            reviewModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const productId = button.getAttribute('data-product-id');
+                const productName = button.getAttribute('data-product-name');
+
+                document.getElementById('modalProductId').value = productId;
+                document.getElementById('modalProductName').textContent = productName;
+            });
+        }
+    </script>

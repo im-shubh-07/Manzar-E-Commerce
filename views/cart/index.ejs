@@ -1,0 +1,238 @@
+<% layout('layouts/boilerplate') %>
+
+  <% const safeCart=(typeof cart !=='undefined' && cart) ? cart : []; const safeSubtotal=(typeof subtotal !=='undefined'
+    && subtotal) ? subtotal : 0; const safeAdvance=(typeof advanceAmount !=='undefined' && advanceAmount) ?
+    advanceAmount : Math.round(safeSubtotal * 0.30); const safeRemaining=(typeof remainingAmount !=='undefined' &&
+    remainingAmount) ? remainingAmount : (safeSubtotal - safeAdvance); %>
+
+    <section class="py-5" style="min-height: 85vh;">
+      <div class="container py-3">
+
+        <!-- Header -->
+        <div class="mb-4">
+          <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-1">M N & SONS</span>
+          <h1 class="font-serif manzar-green fw-bold display-6">Your Shopping Cart</h1>
+        </div>
+
+        <% if (safeCart.length===0) { %>
+          <!-- Empty Cart Screen -->
+          <div class="product-card text-center p-5 border"
+            style="background: white; border-color: var(--manzar-border) !important;">
+            <div class="display-4 mb-3">🛒</div>
+            <h3 class="font-serif manzar-green fw-semibold mb-2">Your cart is empty</h3>
+            <p class="text-muted small mb-4">You haven't added any steel almirahs to your cart yet.</p>
+            <a href="/#shop" class="btn btn-warning rounded-pill px-4 py-2 fw-semibold text-white">
+              Explore Steel Almirahs &rarr;
+            </a>
+          </div>
+          <% } else { %>
+
+            <div class="row g-4">
+
+              <!-- Cart Items List (Product Display) -->
+              <div class="col-lg-8">
+                <div class="product-card p-4 border"
+                  style="background: white; border-color: var(--manzar-border) !important;">
+
+                  <% safeCart.forEach(item=> { %>
+                    <div class="cart-item d-flex align-items-center gap-3 py-3 border-bottom">
+                      <img src="<%= item.image %>" alt="<%= item.title %>" class="cart-item-img rounded-3 shadow-sm"
+                        style="width: 85px; height: 85px; object-fit: cover;">
+
+                      <div class="flex-grow-1">
+                        <h5 class="font-serif manzar-green fw-semibold mb-1">
+                          <%= item.title %>
+                        </h5>
+                        <div class="text-muted small mb-1">Heavy CRCA Steel • Custom Fabrication Ready</div>
+                        <div class="fw-bold text-warning fs-5">₹<%= Number(item.price).toLocaleString('en-IN') %>
+                        </div>
+                      </div>
+
+                      <div class="text-end">
+                        <div class="text-muted small mb-2">Quantity: <strong>
+                            <%= item.quantity %>
+                          </strong></div>
+                        <form action="/cart/remove" method="POST">
+                          <input type="hidden" name="productId" value="<%= item.id %>">
+                          <button type="submit" class="btn btn-sm text-danger p-0 border-0 bg-transparent">
+                            ✕ Remove
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                    <% }) %>
+
+                      <div class="pt-4 text-end">
+                        <a href="/#shop" class="text-muted small text-decoration-none">&larr; Continue browsing more
+                          pieces</a>
+                      </div>
+                </div>
+              </div>
+
+              <!-- Summary & The 2 Options -->
+              <div class="col-lg-4">
+                <div class="product-card p-4 border sticky-top"
+                  style="background: white; border-color: var(--manzar-border) !important; top: 100px;">
+                  <h5 class="font-serif manzar-green fw-bold mb-3 border-bottom pb-2">Order Summary</h5>
+
+                  <div class="d-flex justify-content-between text-muted small mb-2">
+                    <span>Items Total (<%= safeCart.length %>):</span>
+                    <span class="fw-semibold text-dark">₹<%= safeSubtotal.toLocaleString('en-IN') %></span>
+                  </div>
+
+                  <div class="d-flex justify-content-between text-muted small mb-3">
+                    <span>Delivery within Purnia:</span>
+                    <span class="text-success fw-semibold">FREE</span>
+                  </div>
+
+                  <div class="d-flex justify-content-between border-top pt-3 mb-4">
+                    <span class="fw-bold fs-5 manzar-green">Total Value:</span>
+                    <span class="fw-bold fs-5 text-warning">₹<%= safeSubtotal.toLocaleString('en-IN') %></span>
+                  </div>
+
+                  <!-- OPTION 1: CUSTOMISATION ENQUIRY -->
+                  <div class="mb-3">
+                    <button type="button"
+                      class="btn btn-outline-dark w-100 rounded-pill py-2 fw-semibold d-flex align-items-center justify-content-center gap-2"
+                      data-bs-toggle="modal" data-bs-target="#customizationModal">
+                      <span>🎨</span> Request Customisation
+                    </button>
+                    <small class="text-muted d-block text-center mt-1" style="font-size: 0.72rem;">
+                      Customize color, dimensions, or locker design
+                    </small>
+                  </div>
+
+                  <!-- OPTION 2: PROCEED TO ORDER -->
+                  <div>
+                    <button type="button"
+                      class="btn btn-warning w-100 rounded-pill py-2 fw-semibold text-white shadow-sm d-flex align-items-center justify-content-center gap-2"
+                      data-bs-toggle="modal" data-bs-target="#orderModal">
+                      <span>💳</span> Order This Product
+                    </button>
+                    <small class="text-muted d-block text-center mt-1" style="font-size: 0.72rem;">
+                      Choose Partial (Advance) or Full Payment
+                    </small>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Modal 1: Customisation -->
+            <div class="modal fade" id="customizationModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow">
+                  <div class="modal-header border-0 pb-0">
+                    <div>
+                      <span class="text-warning text-uppercase small fw-bold tracking-widest">OPTION 1</span>
+                      <h4 class="font-serif manzar-green fw-bold mb-0">Customise Your Almira</h4>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form action="/enquiries/custom" method="POST">
+                    <div class="modal-body py-4">
+                      <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted">Preferred Color</label>
+                        <select name="color" class="form-select rounded-pill px-3">
+                          <option value="Classic Maroon & Gold">Classic Maroon & Gold</option>
+                          <option value="Royal Navy Blue">Royal Navy Blue</option>
+                          <option value="Forest Pine Green">Forest Pine Green</option>
+                          <option value="Warm Terracotta">Warm Terracotta</option>
+                          <option value="Matte Charcoal Grey">Matte Charcoal Grey</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted">Required Dimensions</label>
+                        <input type="text" name="size" class="form-control rounded-pill px-3"
+                          placeholder="e.g. 78H x 38W x 21D inches" required>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted">Interior & Locker Details</label>
+                        <textarea name="designRequirements" rows="3" class="form-control rounded-3 p-3"
+                          placeholder="Describe locker requirements..." required></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control rounded-pill px-3" placeholder="Phone Number"
+                          required>
+                      </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                      <button type="submit"
+                        class="btn btn-warning w-100 rounded-pill py-2 fw-semibold text-white shadow-sm">
+                        Submit Customisation Enquiry &rarr;
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal 2: Order & Payment -->
+            <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow">
+                  <div class="modal-header border-0 pb-0">
+                    <div>
+                      <span class="text-warning text-uppercase small fw-bold tracking-widest">OPTION 2</span>
+                      <h4 class="font-serif manzar-green fw-bold mb-0">Place Order & Choose Payment</h4>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form action="/orders/checkout" method="POST">
+                    <div class="modal-body py-4">
+                      <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted">Delivery Address</label>
+                        <textarea name="deliveryAddress" rows="2" class="form-control rounded-3 p-3"
+                          placeholder="Street, Landmark, City, Pincode" required></textarea>
+                      </div>
+
+                      <label class="form-label small fw-semibold text-muted mb-2">Select Payment Method</label>
+
+                      <div class="form-check p-3 rounded-3 border mb-3"
+                        style="background: #faf7f2; border-color: var(--manzar-border) !important;">
+                        <input class="form-check-input" type="radio" name="paymentType" id="partialPay" value="partial"
+                          checked>
+                        <label class="form-check-label w-100 ps-2" for="partialPay">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <strong class="manzar-green">Partial Payment (30% Advance Token)</strong>
+                            <span class="badge bg-warning text-dark">₹<%= safeAdvance.toLocaleString('en-IN') %>
+                                Now</span>
+                          </div>
+                          <small class="text-muted d-block mt-1">
+                            Pay ₹<%= safeAdvance.toLocaleString('en-IN') %> advance to start fabrication. Balance ₹<%=
+                                safeRemaining.toLocaleString('en-IN') %> on cash-on-delivery.
+                          </small>
+                        </label>
+                      </div>
+
+                      <div class="form-check p-3 rounded-3 border mb-3"
+                        style="border-color: var(--manzar-border) !important;">
+                        <input class="form-check-input" type="radio" name="paymentType" id="fullPay" value="full">
+                        <label class="form-check-label w-100 ps-2" for="fullPay">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <strong class="manzar-green">Full Payment (100%)</strong>
+                            <span class="badge bg-success">₹<%= safeSubtotal.toLocaleString('en-IN') %></span>
+                          </div>
+                          <small class="text-muted d-block mt-1">
+                            Pay 100% upfront via UPI / QR / Card for priority delivery.
+                          </small>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="modal-footer border-0 pt-0">
+                      <button type="submit"
+                        class="btn btn-warning w-100 rounded-pill py-2 fw-semibold text-white shadow-sm">
+                        Confirm & Proceed to Payment &rarr;
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <% } %>
+
+      </div>
+    </section>

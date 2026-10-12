@@ -1,0 +1,64 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 80vh; display: flex; align-items: center;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7 col-lg-5">
+
+                    <div class="product-card p-4 p-md-5 border"
+                        style="background: #ffffff; border-color: var(--manzar-border) !important;">
+                        <div class="text-center mb-4">
+                            <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-1">M N &
+                                SONS</span>
+                            <h2 class="font-serif manzar-green fw-bold">Welcome Back</h2>
+                            <p class="text-muted small">Login to access your cart, custom quotes & orders</p>
+                        </div>
+
+                        <% if (error) { %>
+                            <div class="alert alert-danger py-2 small rounded-3 mb-3">
+                                <%= error %>
+                            </div>
+                            <% } %>
+
+                                <form action="/login" method="POST">
+                                    <!-- Email -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold text-muted">Email Address</label>
+                                        <input type="email" name="email" class="form-control rounded-pill px-3 py-2"
+                                            placeholder="you@example.com" required>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div class="mb-4">
+                                        <label class="form-label small fw-semibold text-muted">Password</label>
+                                        <input type="password" name="password"
+                                            class="form-control rounded-pill px-3 py-2" placeholder="••••••••" required>
+                                    </div>
+
+                                    <button type="submit"
+                                        class="btn btn-warning w-100 rounded-pill py-2 fw-semibold shadow-sm mb-3">
+                                        Login to Account &rarr;
+                                    </button>
+
+                                    <div class="text-center small text-muted">
+                                        Don't have an account? <a href="/register"
+                                            class="text-warning fw-semibold text-decoration-none">Create one</a>
+                                    </div>
+                                </form>
+                                <!-- ─── DISCREET ADMIN PORTAL SWITCH BUTTON ─── -->
+                                <div class="mt-4 pt-3 border-top text-center" style="border-color: #E8DCCF !important;">
+                                    <span class="text-muted small d-block mb-2" style="font-size: 0.78rem;">Factory
+                                        &amp; Workshop Operations?</span>
+                                    <a href="/admin/login"
+                                        class="btn btn-sm btn-outline-dark rounded-pill px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm"
+                                        style="font-size: 0.82rem; border-color: #174840; color: #174840;">
+                                        <i class="bi bi-shield-lock-fill text-warning"></i>
+                                        <span>Workshop Admin Portal &rarr;</span>
+                                    </a>
+                                </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>

@@ -1,0 +1,120 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 85vh;">
+        <div class="container-xl px-4 py-3">
+
+            <div class="mb-4">
+                <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-1">M N & SONS
+                    COLLECTION</span>
+                <h1 class="font-serif display-5 fw-bold" style="color: #174840;">All Steel Almirahs</h1>
+                <p class="text-muted">Handcrafted heavy steel wardrobes built in Purnia for generational durability.</p>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row g-4">
+                <% if (typeof products !=='undefined' && products.length> 0) { %>
+                    <% products.forEach(product=> { %>
+                        <% const prodImg=(product.images && product.images.length> 0) ? product.images[0] :
+                            (product.image ||
+                            'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80');
+                            %>
+                            <div class="col-sm-6 col-lg-4">
+                                <article
+                                    class="product-card h-100 d-flex flex-column justify-content-between p-3 border"
+                                    style="background: white; border-color: var(--manzar-border) !important;">
+                                    <div>
+                                        <div class="product-img-wrap rounded-3 mb-3" style="height: 280px;">
+                                            <img src="<%= prodImg %>" alt="<%= product.name %>"
+                                                class="product-img w-100 h-100 object-fit-cover rounded-3">
+                                            <a href="/products/<%= product._id %>" class="product-overlay-link">
+                                                <span
+                                                    class="btn btn-sm btn-light rounded-pill px-3 overlay-btn shadow-sm">View
+                                                    Details</span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-serif fs-5 fw-bold mb-1" style="color: #174840;">
+                                                <%= product.name %>
+                                            </h4>
+                                            <p class="text-muted small mb-2">
+                                                <%= product.color %> &middot; <%= product.category %>
+                                            </p>
+                                            <p class="fw-bold text-warning fs-5 mb-3">₹<%= Number(product.price ||
+                                                    0).toLocaleString('en-IN') %>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add to Cart -->
+                                    <div>
+                                        <form class="add-to-cart-form">
+                                            <input type="hidden" name="productId" value="<%= product._id %>">
+                                            <input type="hidden" name="title" value="<%= product.name %>">
+                                            <input type="hidden" name="price" value="<%= product.price %>">
+                                            <input type="hidden" name="image" value="<%= prodImg %>">
+
+                                            <button type="submit"
+                                                class="btn btn-outline-dark rounded-pill w-100 add-to-cart-btn fw-semibold">
+                                                + Add to Cart
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </article>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <div class="col-12 text-center py-5">
+                                        <p class="text-muted">No products available.</p>
+                                    </div>
+                                    <% } %>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Add to Cart Script -->
+    <script>
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button');
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = 'Adding...';
+
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                data.ajax = true;
+
+                try {
+                    const response = await fetch('/cart/add', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    if (!result.success && result.requireLogin) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    if (result.success) {
+                        const badge = document.getElementById('cart-badge-count');
+                        if (badge) badge.innerText = result.cartCount;
+                        btn.classList.remove('btn-outline-dark');
+                        btn.classList.add('btn-success', 'text-white');
+                        btn.innerHTML = '✓ Added!';
+                        setTimeout(() => {
+                            btn.classList.remove('btn-success', 'text-white');
+                            btn.classList.add('btn-outline-dark');
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }, 2000);
+                    }
+                } catch (err) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+        });
+    </script>

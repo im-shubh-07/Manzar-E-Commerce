@@ -1,0 +1,254 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 85vh; background: #FAF7F2;">
+        <div class="container-xl px-4">
+
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom"
+                style="border-color: #E8DCCF !important;">
+                <div>
+                    <a href="/admin" class="text-decoration-none small text-muted"><i class="bi bi-arrow-left"></i>
+                        Admin Portal</a>
+                    <h1 class="font-serif fw-bold mt-1 mb-0" style="color: #174840;">Customize Categories &amp; Products
+                    </h1>
+                </div>
+                <button class="btn btn-manzar-primary btn-sm px-4" data-bs-toggle="modal"
+                    data-bs-target="#addCategoryModal">
+                    <i class="bi bi-plus-lg me-1"></i> Add Extra Category
+                </button>
+            </div>
+
+            <!-- Category Cards with Products list -->
+            <div class="d-flex flex-column gap-4">
+                <% categories.forEach(cat=> { %>
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white"
+                        style="border: 1px solid #E8DCCF !important;">
+
+                        <div class="p-3 px-4 d-flex flex-wrap justify-content-between align-items-center gap-3"
+                            style="background: #FAF7F2; border-bottom: 1px solid #E8DCCF;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-3 p-2 text-white" style="background: #174840;">
+                                    <i class="bi <%= cat.icon || 'bi-grid' %> fs-5"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-serif fw-bold mb-0" style="color: #174840;">
+                                        <%= cat.name %>
+                                    </h5>
+                                    <small class="text-muted">
+                                        <%= cat.description || 'Custom category' %>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-light text-dark border px-3 py-2">
+                                    <%= cat.productCount %> Products
+                                </span>
+                                <form action="/admin/categories/<%= cat._id %>/delete" method="POST"
+                                    onsubmit="return confirm('Delete this category?');" class="mb-0">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                        <i class="bi bi-trash me-1"></i> Delete Category
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <% if (!cat.products || cat.products.length===0) { %>
+                                <div class="text-center py-4 text-muted small">
+                                    No products currently listed under <strong>
+                                        <%= cat.name %>
+                                    </strong>.
+                                    <br>
+                                    <a href="/admin/products"
+                                        class="btn btn-outline-dark btn-sm rounded-pill mt-2">Assign or List Products
+                                        &rarr;</a>
+                                </div>
+                                <% } else { %>
+                                    <div class="row g-3">
+                                        <% cat.products.forEach(prod=> { %>
+                                            <% const img=(prod.images && prod.images.length> 0) ? prod.images[0] :
+                                                'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=300&q=80';
+                                                %>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <div class="p-3 rounded-3 border d-flex gap-3 align-items-center"
+                                                        style="background: #FAF7F2; border-color: #E8DCCF !important;">
+                                                        <img src="<%= img %>" alt="<%= prod.name %>"
+                                                            class="rounded-2 shadow-sm"
+                                                            style="width: 60px; height: 60px; object-fit: cover;">
+
+                                                        <div class="flex-grow-1 overflow-hidden">
+                                                            <strong class="d-block text-truncate"
+                                                                style="color: #174840;">
+                                                                <%= prod.name %>
+                                                            </strong>
+                                                            <span class="text-warning fw-bold small">₹<%=
+                                                                    Number(prod.price || 0).toLocaleString('en-IN') %>
+                                                                    </span>
+                                                            <div class="text-muted small" style="font-size: 0.75rem;">
+                                                                <%= prod.gauge || '20-Gauge CRCA' %>
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <button class="btn btn-sm btn-outline-dark rounded-circle"
+                                                                style="width: 32px; height: 32px; padding: 0;"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#editProductModal"
+                                                                data-id="<%= prod._id %>" data-name="<%= prod.name %>"
+                                                                data-category="<%= prod.category %>"
+                                                                data-price="<%= prod.price %>"
+                                                                data-gauge="<%= prod.gauge %>"
+                                                                data-dimensions="<%= prod.dimensions %>"
+                                                                data-color="<%= prod.color %>" data-image="<%= img %>"
+                                                                data-desc="<%= prod.description %>"
+                                                                title="Edit Product / Re-assign Category">
+                                                                <i class="bi bi-pencil-fill"
+                                                                    style="font-size: 0.75rem;"></i>
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                    </div>
+                                    <% } %>
+                        </div>
+
+                    </div>
+                    <% }); %>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- MODAL: ADD EXTRA CATEGORY -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom py-3 px-4" style="background: #FAF7F2;">
+                    <h5 class="modal-title font-serif fw-bold" style="color: #174840;">Add Extra Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/admin/categories/add" method="POST">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">CATEGORY NAME</label>
+                            <input type="text" name="name" class="form-control rounded-3"
+                                placeholder="e.g. Heavy Iron Safes (Tijori)" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">BOOTSTRAP ICON</label>
+                            <select name="icon" class="form-select rounded-3">
+                                <option value="bi-door-closed">bi-door-closed (Bedroom Almirah)</option>
+                                <option value="bi-archive">bi-archive (Office Storage)</option>
+                                <option value="bi-safe">bi-safe (Heavy Tijori / Iron Safe)</option>
+                                <option value="bi-gear-wide-connected">bi-gear (Custom Fabricated)</option>
+                                <option value="bi-lock">bi-lock (Security)</option>
+                                <option value="bi-grid">bi-grid (General)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">DESCRIPTION</label>
+                            <textarea name="description" rows="2" class="form-control rounded-3"
+                                placeholder="e.g. Dual-lock reinforced heavy security tijori..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top py-3 px-4" style="background: #FAF7F2;">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-manzar-primary px-4">Create Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT PRODUCT & RE-ASSIGN CATEGORY -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom py-3 px-4" style="background: #FAF7F2;">
+                    <h5 class="modal-title font-serif fw-bold" style="color: #174840;">Edit Product / Change Category
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editProductForm" method="POST">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-7">
+                                <label class="form-label small fw-bold text-muted">PRODUCT NAME</label>
+                                <input type="text" name="name" id="editProdName" class="form-control rounded-3"
+                                    required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-muted">ASSIGN TO CATEGORY</label>
+                                <select name="category" id="editProdCategory" class="form-select rounded-3" required>
+                                    <% categories.forEach(cat=> { %>
+                                        <option value="<%= cat.name %>">
+                                            <%= cat.name %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">PRICE (₹)</label>
+                                <input type="number" name="price" id="editProdPrice" class="form-control rounded-3"
+                                    required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">STEEL GAUGE</label>
+                                <input type="text" name="gauge" id="editProdGauge" class="form-control rounded-3">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">COLOR</label>
+                                <input type="text" name="color" id="editProdColor" class="form-control rounded-3">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">DIMENSIONS</label>
+                                <input type="text" name="dimensions" id="editProdDimensions"
+                                    class="form-control rounded-3">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">IMAGE URL</label>
+                                <input type="url" name="image" id="editProdImage" class="form-control rounded-3">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted">DESCRIPTION</label>
+                                <textarea name="description" id="editProdDesc" rows="3"
+                                    class="form-control rounded-3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top py-3 px-4" style="background: #FAF7F2;">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-manzar-primary px-4">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const editModal = document.getElementById('editProductModal');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+
+                document.getElementById('editProductForm').action = '/admin/products/' + id + '/edit';
+                document.getElementById('editProdName').value = button.getAttribute('data-name');
+                document.getElementById('editProdCategory').value = button.getAttribute('data-category');
+                document.getElementById('editProdPrice').value = button.getAttribute('data-price');
+                document.getElementById('editProdGauge').value = button.getAttribute('data-gauge');
+                document.getElementById('editProdDimensions').value = button.getAttribute('data-dimensions');
+                document.getElementById('editProdColor').value = button.getAttribute('data-color');
+                document.getElementById('editProdImage').value = button.getAttribute('data-image');
+                document.getElementById('editProdDesc').value = button.getAttribute('data-desc');
+            });
+        }
+    </script>

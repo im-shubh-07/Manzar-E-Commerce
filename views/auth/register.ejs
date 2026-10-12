@@ -1,0 +1,68 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 80vh; display: flex; align-items: center;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7 col-lg-5">
+
+                    <div class="product-card p-4 p-md-5 border"
+                        style="background: #ffffff; border-color: var(--manzar-border) !important;">
+                        <div class="text-center mb-4">
+                            <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-1">M N &
+                                SONS</span>
+                            <h2 class="font-serif manzar-green fw-bold">Create Account</h2>
+                            <p class="text-muted small">Join us to explore & customize handcrafted steel almirahs</p>
+                        </div>
+
+                        <% if (error) { %>
+                            <div class="alert alert-danger py-2 small rounded-3 mb-3">
+                                <%= error %>
+                            </div>
+                            <% } %>
+
+                                <form action="/register" method="POST">
+                                    <!-- Full Name -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold text-muted">Full Name</label>
+                                        <input type="text" name="name" class="form-control rounded-pill px-3 py-2"
+                                            placeholder="e.g. Rahul Sharma" required>
+                                    </div>
+
+                                    <!-- Email Address -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold text-muted">Email Address</label>
+                                        <input type="email" name="email" class="form-control rounded-pill px-3 py-2"
+                                            placeholder="rahul@example.com" required>
+                                    </div>
+
+                                    <!-- Phone Number -->
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold text-muted">Phone Number</label>
+                                        <input type="tel" name="phone" class="form-control rounded-pill px-3 py-2"
+                                            placeholder="9876543210" required>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div class="mb-4">
+                                        <label class="form-label small fw-semibold text-muted">Password (Min. 6
+                                            characters)</label>
+                                        <input type="password" name="password"
+                                            class="form-control rounded-pill px-3 py-2" placeholder="••••••••" required>
+                                    </div>
+
+                                    <button type="submit"
+                                        class="btn btn-warning w-100 rounded-pill py-2 fw-semibold shadow-sm mb-3">
+                                        Register & Continue &rarr;
+                                    </button>
+
+                                    <div class="text-center small text-muted">
+                                        Already have an account? <a href="/login"
+                                            class="text-warning fw-semibold text-decoration-none">Login here</a>
+                                    </div>
+                                </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>

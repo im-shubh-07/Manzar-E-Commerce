@@ -1,0 +1,73 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 85vh; display: flex; align-items: center;">
+        <div class="container-xl px-4 py-3">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+
+                    <div class="product-card p-4 p-md-5 border shadow-sm"
+                        style="background: white; border-color: var(--manzar-border) !important; border-radius: 24px;">
+
+                        <div class="text-center mb-4">
+                            <span class="text-warning text-uppercase small fw-bold tracking-widest d-block mb-1">M N &
+                                SONS SECURE CHECKOUT</span>
+                            <h2 class="font-serif manzar-green fw-bold mb-1">Complete Your Payment</h2>
+                            <p class="text-muted small">Scan UPI QR code or pay using Google Pay / PhonePe / Paytm</p>
+                        </div>
+
+                        <!-- Payable Amount Highlight Box -->
+                        <div class="p-3 rounded-4 mb-4 text-center border"
+                            style="background: #FAF7F2; border-color: var(--manzar-border) !important;">
+                            <span class="text-muted small text-uppercase fw-semibold"
+                                style="letter-spacing: 0.1em;">Total Payable Now:</span>
+                            <div class="display-5 fw-bold text-warning my-1">
+                                ₹<%= Number(order.advancePaid || order.totalAmount).toLocaleString('en-IN') %>
+                            </div>
+                            <small
+                                class="badge <%= order.paymentType === 'partial' ? 'bg-warning text-dark' : 'bg-success' %> rounded-pill px-3 py-1">
+                                <%= order.paymentType==='partial' ? '30% Advance Token Deposit' : '100% Full Payment' %>
+                            </small>
+                        </div>
+
+                        <!-- 📱 UPI QR Code Generator -->
+                        <div class="text-center mb-4">
+                            <div class="p-3 d-inline-block rounded-4 border bg-white shadow-sm mb-2">
+                                <!-- Live dynamic UPI QR code generator for 7782091388@upi -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=7782091388@upi&pn=MN%20and%20SONS&am=<%= order.advancePaid %>&cu=INR"
+                                    alt="UPI QR Code" class="img-fluid rounded-3" style="width: 170px; height: 170px;">
+                            </div>
+                            <p class="small text-muted mb-1">UPI ID: <strong class="text-dark">7782091388@upi</strong>
+                            </p>
+                            <span class="badge bg-light text-dark border small">Scan with any UPI App</span>
+                        </div>
+
+                        <!-- Payment Confirmation Form -->
+                        <form action="/orders/payment/verify" method="POST">
+                            <input type="hidden" name="orderId" value="<%= order._id %>">
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-muted">UPI Reference / UTR Number
+                                    (Optional)</label>
+                                <input type="text" name="transactionId" class="form-control rounded-pill px-3 py-2"
+                                    placeholder="e.g. 412389102938 or PhonePe Txn ID">
+                            </div>
+
+                            <!-- "I Have Paid" Button -->
+                            <button type="submit"
+                                class="btn btn-warning w-100 rounded-pill py-3 fw-semibold text-white shadow-sm fs-6 mb-2">
+                                ✓ I Have Paid ₹<%= Number(order.advancePaid).toLocaleString('en-IN') %> &middot; Confirm
+                                    Order
+                            </button>
+
+                            <a href="/cart"
+                                class="btn btn-link text-muted small w-100 text-decoration-none text-center">
+                                Cancel & Return to Cart
+                            </a>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>

@@ -1,0 +1,75 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5 d-flex align-items-center" style="min-height: 80vh; background-color: var(--manzar-cream);">
+        <div class="container-xl px-4">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+
+                    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white"
+                        style="border: 1px solid var(--manzar-border) !important;">
+
+                        <!-- Logo & Brand Header -->
+                        <div class="text-center mb-4">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                                style="width: 60px; height: 60px; background: #174840; color: #FAF7F2; font-size: 1.5rem;">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <h2 class="font-serif fw-bold mt-2" style="color: #174840;">Workshop Portal</h2>
+                            <p class="text-muted small">M N &amp; SONS &middot; Administrator Authentication</p>
+                        </div>
+
+                        <!-- Error Alert -->
+                        <% if (error) { %>
+                            <div
+                                class="alert alert-danger rounded-3 py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>
+                                    <%= error %>
+                                </span>
+                            </div>
+                            <% } %>
+
+                                <!-- Login Form -->
+                                <form action="/admin/login" method="POST">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-muted">ADMIN EMAIL</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0"><i
+                                                    class="bi bi-envelope text-muted"></i></span>
+                                            <input type="email" name="email" class="form-control border-start-0"
+                                                placeholder="admin@mnandsons.com" required value="admin@mnandsons.com">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label small fw-bold text-muted">PASSWORD</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0"><i
+                                                    class="bi bi-key text-muted"></i></span>
+                                            <input type="password" name="password" class="form-control border-start-0"
+                                                placeholder="Enter password" required>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit"
+                                        class="btn btn-manzar-primary w-100 py-3 rounded-pill fw-semibold shadow-sm">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> Access Factory Dashboard
+                                    </button>
+                                </form>
+
+                                <div class="text-center mt-4 pt-3 border-top">
+                                    <a href="/" class="text-decoration-none small text-muted">&larr; Return to Customer
+                                        Shop</a>
+                                </div>
+                                <div class="text-center mt-4 pt-3 border-top">
+                                    <a href="/login" class="text-decoration-none small text-muted">
+                                        &larr; Switch to Customer Login
+                                    </a>
+                                </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>

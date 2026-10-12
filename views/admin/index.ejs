@@ -1,0 +1,172 @@
+<% layout('layouts/boilerplate') %>
+
+    <section class="py-5" style="min-height: 85vh; background: #FAF7F2;">
+        <div class="container-xl px-4">
+
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom"
+                style="border-color: #E8DCCF !important;">
+                <div>
+                    <span class="text-uppercase small fw-bold text-muted" style="letter-spacing: 0.15em;">FACTORY ADMIN
+                        PORTAL</span>
+                    <h1 class="font-serif fw-bold mt-1 mb-1" style="color: #174840;">M N &amp; SONS Management</h1>
+
+                    <!-- 👤 LOGGED IN ADMIN DETAILS WITH TYPE -->
+                    <% if (typeof currentAdmin !=='undefined' && currentAdmin) { %>
+                        <div
+                            class="d-inline-flex align-items-center gap-2 mt-2 px-3 py-1 rounded-pill bg-white border shadow-sm">
+                            <span class="rounded-circle d-flex align-items-center justify-content-center text-white"
+                                style="width: 24px; height: 24px; font-size: 0.75rem; background: <%= currentAdmin.isMaster ? '#174840' : '#4b5563' %>;">
+                                <%= currentAdmin.isMaster ? '👑' : '🛠️' %>
+                            </span>
+                            <span class="small text-muted">Logged in as:</span>
+                            <strong style="color: #174840; font-size: 0.9rem;">
+                                <%= currentAdmin.name %>
+                            </strong>
+                            <span
+                                class="badge <%= currentAdmin.isMaster ? 'bg-warning text-dark' : 'bg-secondary text-white' %> px-2 py-1"
+                                style="font-size: 0.68rem;">
+                                <%= currentAdmin.isMaster ? '👑 Master Admin' : '🛠️ Operations Sub-Admin' %>
+                            </span>
+                        </div>
+                        <% } %>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-3 mt-md-0">
+                    <a href="/admin/orders" class="btn btn-manzar-primary btn-sm px-3">
+                        <i class="bi bi-box-seam me-1"></i> Manage Orders
+                    </a>
+                    <a href="/admin/products" class="btn btn-outline-dark btn-sm px-3 rounded-pill">
+                        <i class="bi bi-box me-1"></i> Catalog
+                    </a>
+                    <a href="/admin/categories" class="btn btn-outline-dark btn-sm px-3 rounded-pill">
+                        <i class="bi bi-tags me-1"></i> Categories
+                    </a>
+
+                    <!-- 👥 ADMINS LINK: SIRF MASTER ADMIN KO DIKHEGA -->
+                    <% if ((typeof isMasterAdmin !=='undefined' && isMasterAdmin) || (typeof currentAdmin !=='undefined'
+                        && currentAdmin && (currentAdmin.isMaster || currentAdmin.email==='admin@mnandsons.com' ))) { %>
+                        <a href="/admin/admins" class="btn btn-outline-dark btn-sm px-3 rounded-pill"
+                            style="border-color: #174840; color: #174840; font-weight: 600;">
+                            <i class="bi bi-shield-lock-fill text-warning me-1"></i> Manage Admins
+                        </a>
+                        <% } %>
+
+                            <a href="/admin/logout" class="btn btn-outline-danger btn-sm px-3 rounded-pill">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </a>
+                </div>
+            </div>
+
+            <!-- Quick Stat Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100"
+                        style="background: #FFFFFF; border-left: 5px solid #174840 !important;">
+                        <span class="text-muted small fw-bold text-uppercase">Active Orders</span>
+                        <h2 class="font-serif fw-bold my-2" style="color: #174840;">
+                            <%= typeof activeOrdersCount !=='undefined' ? activeOrdersCount : 0 %>
+                        </h2>
+                        <small class="text-muted">In fabrication or transit</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100"
+                        style="background: #FFFFFF; border-left: 5px solid #28A745 !important;">
+                        <span class="text-muted small fw-bold text-uppercase">Completed &amp; Delivered</span>
+                        <h2 class="font-serif fw-bold my-2 text-success">
+                            <%= typeof deliveredOrdersCount !=='undefined' ? deliveredOrdersCount : 0 %>
+                        </h2>
+                        <small class="text-muted">Fabrication finished</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100"
+                        style="background: #FFFFFF; border-left: 5px solid #B96F3D !important;">
+                        <span class="text-muted small fw-bold text-uppercase">Listed Almirahs &amp; Safes</span>
+                        <h2 class="font-serif fw-bold my-2" style="color: #B96F3D;">
+                            <%= typeof productsCount !=='undefined' ? productsCount : 0 %>
+                        </h2>
+                        <small class="text-muted">Live on public shop</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100"
+                        style="background: #FFFFFF; border-left: 5px solid #0284c7 !important;">
+                        <span class="text-muted small fw-bold text-uppercase">B2B Commercial Leads</span>
+                        <h2 class="font-serif fw-bold my-2" style="color: #0284c7;">
+                            <%= typeof leadsCount !=='undefined' ? leadsCount : 0 %>
+                        </h2>
+                        <small class="text-muted">Wholesale &amp; Franchise</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Sections -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column"
+                        style="background: #FFFFFF;">
+                        <div class="fs-2 mb-2 text-success"><i class="bi bi-truck"></i></div>
+                        <h4 class="font-serif fw-bold" style="color: #174840;">Order Tracking &amp; Leads</h4>
+                        <p class="text-muted small">Update 5-stage fabrication pipeline (Fabrication, Powder Coating,
+                            Dispatched) and manage B2B inquiries.</p>
+                        <a href="/admin/orders" class="btn btn-outline-dark rounded-pill btn-sm mt-auto">Open Orders
+                            &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column"
+                        style="background: #FFFFFF;">
+                        <div class="fs-2 mb-2" style="color: #B96F3D;"><i class="bi bi-box-seam"></i></div>
+                        <h4 class="font-serif fw-bold" style="color: #174840;">Catalog Items</h4>
+                        <p class="text-muted small">List new 2-door/3-door almirahs, iron safes, edit gauge (18/20
+                            gauge), price, and photos.</p>
+                        <a href="/admin/products" class="btn btn-outline-dark rounded-pill btn-sm mt-auto">Manage Items
+                            &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column"
+                        style="background: #FFFFFF;">
+                        <div class="fs-2 mb-2 text-primary"><i class="bi bi-tags-fill"></i></div>
+                        <h4 class="font-serif fw-bold" style="color: #174840;">Categories &amp; Navigation</h4>
+                        <p class="text-muted small">Add custom categories (Tijori, Office, Bedroom). View products
+                            grouped inside categories.</p>
+                        <a href="/admin/categories" class="btn btn-outline-dark rounded-pill btn-sm mt-auto">Manage
+                            Categories &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Master Admin Extra Card: Sub-Admin Controls -->
+                <% if ((typeof isMasterAdmin !=='undefined' && isMasterAdmin) || (typeof currentAdmin !=='undefined' &&
+                    currentAdmin && (currentAdmin.isMaster || currentAdmin.email==='admin@mnandsons.com' ))) { %>
+                    <div class="col-12 mt-4">
+                        <div class="card border-0 shadow-sm rounded-4 p-4"
+                            style="background: linear-gradient(135deg, #174840 0%, #0e2e29 100%); color: #FFFFFF;">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-warning text-dark text-uppercase px-2 py-1 mb-2">Master Admin
+                                        Exclusive</span>
+                                    <h4 class="font-serif fw-bold mb-1">Sub-Admin Management</h4>
+                                    <p class="text-white-50 small mb-0">You have full control to create, view, and
+                                        revoke access for staff and workshop supervisors.</p>
+                                </div>
+                                <div class="mt-3 mt-md-0">
+                                    <a href="/admin/admins" class="btn btn-light rounded-pill px-4 fw-bold">
+                                        <i class="bi bi-people-fill me-1"></i> Manage Admin Access &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+            </div>
+
+        </div>
+    </section>

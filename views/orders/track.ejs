@@ -1,0 +1,86 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container-xl px-4 py-5" style="min-height: 85vh;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="product-card p-4 p-md-5 border"
+                    style="background: white; border-color: var(--manzar-border) !important;">
+
+                    <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-4">
+                        <div>
+                            <span class="text-warning text-uppercase small fw-bold tracking-widest">ORDER
+                                TRACKING</span>
+                            <h2 class="font-serif manzar-green fw-bold mb-1">
+                                <%= order.title %>
+                            </h2>
+                            <p class="text-muted small mb-0">Order ID: <code><%= order._id %></code></p>
+                        </div>
+                        <span class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill">
+                            <%= order.orderStatus %>
+                        </span>
+                    </div>
+
+                    <!-- 🚚 5-STEP VISUAL TRACKER -->
+                    <div class="py-4 mb-4">
+                        <div class="d-flex justify-content-between text-center position-relative">
+
+                            <% const steps=['Confirmed', 'Under Fabrication' , 'Powder Coating' , 'Dispatched'
+                                , 'Delivered' ]; const currentIndex=steps.indexOf(order.orderStatus); %>
+
+                                <% steps.forEach((step, idx)=> { %>
+                                    <div class="d-flex flex-column align-items-center" style="width: 20%; z-index: 2;">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold mb-2 <%= idx <= currentIndex ? 'bg-success text-white' : 'bg-light text-muted border' %>"
+                                            style="width: 38px; height: 38px;">
+                                            <%= idx <=currentIndex ? '✓' : idx + 1 %>
+                                        </div>
+                                        <small
+                                            class="fw-semibold <%= idx <= currentIndex ? 'text-dark' : 'text-muted' %>"
+                                            style="font-size: 0.72rem;">
+                                            <%= step %>
+                                        </small>
+                                    </div>
+                                    <% }) %>
+
+                        </div>
+                    </div>
+
+                    <!-- Order Financials -->
+                    <div class="p-3 rounded-3 mb-4"
+                        style="background: #FAF7F2; border: 1px solid var(--manzar-border);">
+                        <div class="row g-2 small">
+                            <div class="col-4">
+                                <span class="text-muted d-block">TOTAL VALUE</span>
+                                <strong class="fs-6 manzar-green">₹<%= order.totalAmount.toLocaleString('en-IN') %>
+                                        </strong>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-muted d-block">ADVANCE PAID</span>
+                                <strong class="fs-6 text-success">₹<%= order.advancePaid.toLocaleString('en-IN') %>
+                                        </strong>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-muted d-block">BALANCE (ON DELIVERY)</span>
+                                <strong class="fs-6 text-warning">₹<%= order.remainingAmount.toLocaleString('en-IN') %>
+                                        </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-muted small">
+                        📍 <strong>Delivery Address:</strong>
+                        <%= order.deliveryAddress %>
+                    </p>
+
+                    <div class="text-center pt-3 border-top">
+                        <a href="https://wa.me/917782091388?text=Hello%20M%20N%20%26%20SONS,%20Regarding%20Order%20<%= order._id %>"
+                            target="_blank" class="btn btn-outline-success rounded-pill px-4 btn-sm">
+                            💬 Contact Workshop on WhatsApp
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
